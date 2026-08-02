@@ -25,7 +25,7 @@ ENV PYTHONUNBUFFERED=1
 ENV ENABLE_PROFILER=1
 
 # Grab packages from builder
-COPY /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
+COPY ./python3.14/ /usr/local/lib/python3.14/
 
 RUN apk update \
     && apk add --no-cache libstdc++ \
