@@ -24,14 +24,14 @@ ENV PYTHONUNBUFFERED=1
 # Enable Profiler
 ENV ENABLE_PROFILER=1
 
+# Grab packages from builder
+COPY /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
+
 RUN apk update \
     && apk add --no-cache libstdc++ \
     && rm -rf /var/cache/apk/*
 
 WORKDIR /email_server
-
-# Grab packages from builder
-COPY /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
 
 # Add the application
 COPY . .
