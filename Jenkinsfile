@@ -7,8 +7,9 @@ podTemplate(yaml: readTrusted('pod.yaml')) {
             container('py-build') {
                 sh '''
                 pip install -r requirements.txt
+                cp -r /usr/local/lib/python3.14 ./python3.14
+                pwd 
                 ls -la
-                ls -la /usr/local/lib/python3.14/
                 '''
             }
         }
