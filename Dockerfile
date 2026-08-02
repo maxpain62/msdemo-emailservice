@@ -1,36 +1,22 @@
-# Copyright 2020 Google LLC
+#ARG BUILDPLATFORM=linux/amd64
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#FROM --platform=$BUILDPLATFORM python:3.14.6-alpine@sha256:26730869004e2b9c4b9ad09cab8625e81d256d1ce97e72df5520e806b1709f92 AS base
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+#FROM base AS builder
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+#ENV PYTHONDONTWRITEBYTECODE=1
+#ENV PYTHONUNBUFFERED=1
+#
+#RUN apk update \
+#    && apk add --no-cache g++ linux-headers \
+#    && rm -rf /var/cache/apk/*
+#
+## get packages
+#COPY requirements.txt .
+#RUN pip install -r requirements.txt
 
-# Define a default value so it's not empty if the builder fails to provide it
-ARG BUILDPLATFORM=linux/amd64
 
-FROM --platform=$BUILDPLATFORM python:3.14.6-alpine@sha256:26730869004e2b9c4b9ad09cab8625e81d256d1ce97e72df5520e806b1709f92 AS base
-
-FROM base AS builder
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-RUN apk update \
-    && apk add --no-cache g++ linux-headers \
-    && rm -rf /var/cache/apk/*
-
-# get packages
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-FROM base
+FROM 134448505602.dkr.ecr.ap-south-1.amazonaws.com/msdemo-emailservice-build:latest
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -45,7 +31,7 @@ RUN apk update \
 WORKDIR /email_server
 
 # Grab packages from builder
-COPY --from=builder /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
+COPY /usr/local/lib/python3.14/ /usr/local/lib/python3.14/
 
 # Add the application
 COPY . .
