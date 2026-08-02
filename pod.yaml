@@ -13,6 +13,8 @@ spec:
     volumeMounts:
         - name: home-jenkins
           mountPath: /home/jenkins/
+        - name: python-build
+          mountPath: /usr/local/lib/python3.14/
     resources:
       limits:
         memory: "2Gi"
@@ -29,6 +31,8 @@ spec:
           mountPath: /root/.docker
         - name: certs
           mountPath: /certs
+        - name: python-build
+          mountPath: /usr/local/lib/python3.14/
   volumes:
     - name: home-jenkins
       emptyDir: {}
@@ -41,3 +45,5 @@ spec:
     - name: certs
       secret:
         secretName: buildkit-client-certs
+    - name: python-build
+      emptyDir: {}
