@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msdemo-emailservice-deployment
+  labels:
+    app: msdemo-emailservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: msdemo-emailservice
+  template:
+    metadata:
+      labels:
+        app: msdemo-emailservice
+    spec:
+      containers:
+        - name: msdemo-emailservice-container
+          image: 134448505602.dkr.ecr.ap-south-1.amazonaws.com/msdemo-emailservice:latest
+          env:
+            - name: PORT
+              value: "8080"
+            - name: DISABLE_PROFILER
+              value: "1"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          livenessProbe:
+            grpc:
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            grpc:
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          ports:
+            - containerPort: 8080
+              protocol: TCP
